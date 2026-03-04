@@ -286,11 +286,11 @@ The **total score** is the sum of the five criteria (maximum 50). The plan with 
 
 ### Environment Variables
 
+Authentication is handled by the **GitHub Copilot SDK**, which uses the user's GitHub Copilot subscription. No separate per-vendor API keys are required.
+
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `OPENAI_API_KEY` | If using OpenAI models | API key for OpenAI |
-| `ANTHROPIC_API_KEY` | If using Anthropic models | API key for Anthropic |
-| `GOOGLE_API_KEY` | If using Google models | API key for Google Gemini |
+| `GITHUB_TOKEN` | Yes | GitHub personal access token (or set via `gh auth login`); used by the Copilot SDK to authenticate all model calls |
 
 ### Config File (`~/.ai-plan-comparator.json`)
 
@@ -307,16 +307,9 @@ All CLI options can be persisted in a JSON config file. CLI flags override confi
 }
 ```
 
-### Model Provider Routing
+### Model Routing
 
-The tool auto-detects the provider from the model name prefix or a vendor mapping:
-
-| Prefix / name pattern | Provider |
-|-----------------------|----------|
-| `gpt-*`, `o1`, `o3`, `codex-*` | OpenAI |
-| `claude-*` | Anthropic |
-| `gemini-*` | Google |
-| Custom | Configurable via `provider` key |
+Model selection is passed directly to the Copilot SDK, which routes requests to the appropriate underlying provider. Any model available through GitHub Copilot (e.g., `gpt-4o`, `claude-3.5-sonnet`, `gemini-1.5-pro`, `o3`) can be used by specifying its identifier via the CLI flags.
 
 ---
 
@@ -324,7 +317,7 @@ The tool auto-detects the provider from the model name prefix or a vendor mappin
 
 | Scenario | Behaviour |
 |----------|-----------|
-| Missing API key | Exit with error code `1`; print a human-readable message indicating which key is missing. |
+| Missing `GITHUB_TOKEN` | Exit with error code `1`; print a human-readable message directing the user to set the token or run `gh auth login`. |
 | API rate-limit (429) | Retry once after the `Retry-After` header delay (or 60 s if absent). Fail with code `2` on second failure. |
 | API timeout | Default request timeout is 120 s. Fail with code `3` and a descriptive message. |
 | Empty agent response | Fail with code `4` and explain which agent returned an empty result. |
@@ -341,7 +334,7 @@ All error messages are printed to **stderr**. Successful output (the final summa
 - **Language:** TypeScript (Node.js ≥ 20)
 - **Package manager:** npm / pnpm
 - **CLI framework:** `commander` or `yargs`
-- **HTTP / SDK:** Official vendor SDKs (`openai`, `@anthropic-ai/sdk`, `@google/generative-ai`)
+- **AI SDK:** [GitHub Copilot SDK](https://github.com/github/copilot-api) (`@github/copilot-api`) — used as the primary SDK for all model calls (Agent A, Agent B, and the Judge). The Copilot SDK provides a unified interface across models and handles authentication via the user's GitHub Copilot subscription, removing the need for separate per-vendor API keys.
 - **Markdown writing:** plain `fs.writeFile` (no external dependency needed)
 - **Parallelism:** `Promise.all` for concurrent agent calls
 
