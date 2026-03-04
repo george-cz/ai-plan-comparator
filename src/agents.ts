@@ -15,7 +15,7 @@ interface ModelCallOptions {
 }
 
 function getContent(message: unknown): string {
-  if (!message || typeof message !== 'object' || !("content" in message)) {
+  if (!message || typeof message !== 'object' || !('content' in message)) {
     return '';
   }
   const content = (message as { content: unknown }).content;
