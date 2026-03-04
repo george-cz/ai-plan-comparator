@@ -12,6 +12,7 @@
     "start": "node dist/cli.js"
   },
   "dependencies": {
+    "@github/copilot-sdk": "^0.1.30",
     "commander": "^14.0.1"
   },
   "devDependencies": {
