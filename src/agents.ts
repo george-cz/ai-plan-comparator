@@ -63,7 +63,7 @@ export async function callModel(options: ModelCallOptions): Promise<string> {
     throw new CliError(`Unexpected API error for model ${options.model}: ${message}`, 2);
   } finally {
     await session?.destroy().catch(() => undefined);
-    await client.stop().catch(() => []);
+    await client.stop().catch(() => undefined);
   }
 }
 
