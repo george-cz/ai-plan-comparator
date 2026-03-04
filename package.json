@@ -1,0 +1,22 @@
+{
+  "name": "ai-plan-comparator",
+  "version": "0.1.0",
+  "description": "CLI to compare AI-generated plans",
+  "type": "module",
+  "bin": {
+    "ai-plan-comparator": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsx --test test/**/*.test.ts",
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "commander": "^14.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
